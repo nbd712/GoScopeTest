@@ -27,8 +27,8 @@ func main() {
 		var mainWg sync.WaitGroup
 
 		mainWg.Add(1)
-		go func(wg *sync.WaitGroup, color string, indexColor string) {
-			defer wg.Done()
+		go func() {
+			defer mainWg.Done()
 
 			var fwg sync.WaitGroup
 
@@ -37,7 +37,6 @@ func main() {
 				log.Printf("Color: %s ColorByIndex: %s Key: %s, Value: %t", color, colors[i], key, value)
 
 				fwg.Add(1)
-
 				go func() {
 					defer fwg.Done()
 
@@ -51,9 +50,9 @@ func main() {
 
 			fwg.Wait()
 
-			log.Printf("Color: %s ColorByIndex: %s Complete", color, indexColor)
+			log.Printf("Color: %s ColorByIndex: %s Complete", color, colors[i])
 
-		}(&mainWg, color, colors[i])
+		}()
 
 		mainWg.Wait()
 	}
